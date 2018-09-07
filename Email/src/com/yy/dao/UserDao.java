@@ -3,6 +3,14 @@ package com.yy.dao;
 import com.yy.entity.User;
 
 public interface UserDao {
-	//Í¨¹ıÓÃ»§ÃûºÍÃÜÂë²éÕÒÓÃ»§
+	
+	
+	/**
+	 * æ³¨é‡Š
+	 * @param userName
+	 * @param password
+	 * @return
+	 */
+	//Í¨ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
 	User queryUser(String userName, String password);
 }
