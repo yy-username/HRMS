@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <display-name>SpringMVCProject</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+	<servlet>
+		<servlet-name>SpringDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param><!-- 告诉程序springMVC的位置 -->
+			<param-name>ContextConfigLocation</param-name>
+			<param-value>classpath:springMVC.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup><!-- 在tomcat启动时加载 -->
+		<!-- 
+		load-on-startup 
+		元素标记容器是否应该在web应用程序启动的时候就加载这个servlet，(实例化并调用其init()方法)。
+		它的值必须是一个整数，表示servlet被加载的先后顺序。
+		如果该元素的值为负数或者没有设置，则容器会当Servlet被请求时再加载。
+		如果值为正整数或者0时，表示容器在应用启动时就加载并初始化这个servlet，值越小，
+		servlet的优先级越高，就越先被加载。值相同时，容器就会自己选择顺序来加载。
+		 -->
+	</servlet>
+  
+  	<servlet-mapping>
+  		<servlet-name>SpringDispatcherServlet</servlet-name>
+  		<url-pattern>/</url-pattern>
+  	</servlet-mapping>
+  	
+  	
+  	
+  	
+</web-app>
