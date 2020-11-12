@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.RecruitmentDao">
+
+	<!-- 添加招聘信息(管理员发布用) -->
+	<insert id="addRecruitmentInfo" parameterType="Recruitment">
+		insert into t_recruitment(recruitment_title, salary_range, company_name, company_area, company_state, 
+		company_size, company_introduction, job_requirement, recruitment_content, welfare_treatment, 
+		recruitment_time) values (#{recruitmentTitle}, #{salaryRange}, #{companyName}, #{companyArea}, 
+		#{companyState}, #{companySize}, #{companyIntroduction}, #{jobRequirement}, #{recruitmentContent}, 
+		#{welfareTreatment}, now())
+	</insert>
+	
+	<!-- 查看所有的招聘信息 -->
+	<select id="queryAllRecruitmentInfo" resultMap="allRecruitmentInfo">
+		select * from t_recruitment order by recruitment_id
+	</select>
+	<resultMap type="Recruitment" id="allRecruitmentInfo">
+		<id property="recruitmentId" column="recruitment_id"/>
+		<result property="recruitmentTitle" column="recruitment_title"/>
+		<result property="salaryRange" column="salary_range"/>
+		<result property="companyName" column="company_name"/>
+		<result property="companyArea" column="company_area"/>
+		<result property="companyState" column="company_state"/>
+		<result property="companySize" column="company_size"/>
+		<result property="companyIntroduction" column="company_introduction"/>
+		<result property="jobRequirement" column="job_requirement"/>
+		<result property="recruitmentContent" column="recruitment_content"/>
+		<result property="welfareTreatment" column="welfare_treatment"/>
+		<result property="isRelease" column="is_release"/>
+		<result property="recruitmentTime" column="recruitment_time"/>
+		<result property="modifyTime" column="modify_time"/>
+		<result property="releaseTime" column="release_time"/>
+	</resultMap>
+	
+	<!-- 查看单条招聘信息 -->
+	<select id="queryRecruitmentInfoByRecruitmentId" parameterType="int" resultType="Recruitment">
+		select * from t_recruitment where recruitment_id=#{recruitmentId}
+	</select>
+	
+	<!-- 发布招聘信息 -->
+	<update id="updateByRecruitmentId" parameterType="int">
+		update t_recruitment set is_release=1, release_time=now() where recruitment_id=#{recruitmentId}
+	</update>
+	
+	<delete id="deleteByRecruitmentId" parameterType="int">
+		delete from t_recruitment where recruitment_id=#{recruitmentId}
+	</delete>
+	
+	<!-- 修改招聘信息 -->
+	<update id="updateRecruitmentInfoByRecruitmentId" parameterType="Recruitment">
+		update t_recruitment set recruitment_title=#{recruitmentTitle}, salary_range=#{salaryRange}, 
+		company_name=#{companyName}, company_area=#{companyArea}, company_state=#{companyState}, 
+		company_size=#{companySize}, company_introduction=#{companyIntroduction}, 
+		job_requirement=#{jobRequirement}, recruitment_content=#{recruitmentContent}, 
+		welfare_treatment=#{welfareTreatment}, modify_time=now() where recruitment_id=#{recruitmentId} 
+		and is_release=0
+	</update>
+	
+	<!-- 修改招聘信息(管理员用) -->
+	<update id="updateByRecruitment" parameterType="Recruitment">
+		update t_recruitment set recruitment_title=#{recruitmentTitle}, salary_range=#{salaryRange}, 
+		company_name=#{companyName}, company_area=#{companyArea}, company_state=#{companyState}, 
+		company_size=#{companySize}, company_introduction=#{companyIntroduction}, 
+		job_requirement=#{jobRequirement}, recruitment_content=#{recruitmentContent}, 
+		welfare_treatment=#{welfareTreatment}, modify_time=now() where recruitment_id=#{recruitmentId} 
+		and is_release=0
+	</update>
+</mapper>

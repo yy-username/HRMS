@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.InterviewDao">
+	
+	<!-- 添加面试邀请(管理员用) -->
+	<insert id="addInterview" parameterType="Interview">
+		insert into t_interview(resume_id, user_id, interview_content, send_interview, send_time) 
+		values(#{resumeId}, #{userId}, #{interviewContent}, 1, now())
+	</insert>
+	
+	<!-- 查看收到的所有面试邀请(游客用) -->
+	<select id="queryInterviewInfo" parameterType="int" resultMap="allReceive">
+		select employed,interview_pass,t_interview.interview_id, t_user.user_id, t_resume.resume_id,job_intension,confirm_interview,entry 
+		from t_interview,t_user,t_resume where t_interview.resume_id=t_resume.resume_id 
+		and t_user.user_id=t_interview.user_id and t_interview.user_id=#{userId} and send_interview=1
+	</select>
+	<resultMap type="Interview" id="allReceive">
+		<id property="interviewId" column="interview_id"/>
+		<result property="resumeId" column="resume_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="sendInterview" column="send_interview"/>
+		<result property="interviewContent" column="interview_content"/>
+		<result property="sendTime" column="send_time"/>
+		<result property="confirmInterview" column="confirm_interview"/>
+		<result property="confirmTime" column="confirm_time"/>
+		<result property="writeScore" column="write_score"/>
+		<result property="interviewScore" column="interview_score"/>
+		<result property="totalScore" column="total_score"/>
+		<result property="interviewPass" column="interview_pass"/>
+		<result property="employed" column="employed"/>
+		<result property="entry" column="entry"/>
+		<association property="user" javaType="User">
+			<id property="userId" column="user_id"/>
+			<result property="nickName" column="nick_name"/>
+			<result property="userName" column="user_name"/>
+			<result property="foreignLevel" column="foreign_level"/>
+			<result property="sex" column="sex"/>
+			<result property="nation" column="nation"/>
+			<result property="politicalLandscape" column="political_landscape"/>
+			<result property="marriage" column="marriage"/>
+			<result property="graduateSchool" column="graduate_school"/>
+			<result property="birth" column="birth"/>
+			<result property="IDCard" column="ID_card"/>
+			<result property="education" column="education"/>
+			<result property="address" column="address"/>
+			<result property="mobile" column="mobile"/>
+			<result property="email" column="email"/>
+			<result property="deptId" column="dept_id"/>
+			<result property="deptName" column="dept_name"/>
+			<result property="positionId" column="position_id"/>
+			<result property="positionName" column="position_name"/>
+		</association>
+		<association property="resume" javaType="Resume">
+			<id property="resumeId" column="resume_id"/>
+			<result property="resumeName" column="resume_name"/>
+			<result property="userId" column="user_id"/>
+			<result property="jobIntension" column="job_intension"/>
+			<result property="resumeEducation" column="resume_education"/>
+			<result property="workExperience" column="work_experience"/>
+			<result property="skillsCertificate" column="skills_certificate"/>
+			<result property="selfAssessment" column="self_assessment"/>
+			<result property="deliveryStatus" column="delivery_status"/>
+			<result property="createTime" column="create_time"/>
+			<result property="deliveryTime" column="delivery_time"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查看单条面试邀请(游客用) -->
+	<select id="queryInterviewSingleInfo">
+		select * from t_interview where interview_id=#{interviewId}
+	</select>
+	
+	<!-- 遍历发送的所有面试邀请 -->
+	<select id="iteratorInterview" resultMap="iteratorAllInterview">
+		select job_intension,work_experience,delivery_time,send_interview,confirm_interview,interview_pass,employed,entry from t_interview,t_user,t_resume 
+		where t_interview.resume_id=t_resume.resume_id and t_interview.user_id=t_user.user_id
+	</select>
+	<resultMap type="Interview" id="iteratorAllInterview">
+		<id property="interviewId" column="interview_id"/>
+		<result property="resumeId" column="resume_id"/>
+		<result property="sendInterview" column="send_interview"/>
+		<result property="interviewContent" column="interview_content"/>
+		<result property="sendTime" column="send_time"/>
+		<result property="confirmInterview" column="confirm_interview"/>
+		<result property="confirmTime" column="confirm_time"/>
+		<result property="writeScore" column="write_score"/>
+		<result property="interviewScore" column="interview_score"/>
+		<result property="totalScore" column="total_score"/>
+		<result property="interviewPass" column="interview_pass"/>
+		<result property="employed" column="employed"/>
+		<association property="user" javaType="User">
+			<id property="userId" column="user_id"/>
+			<result property="nickName" column="nick_name"/>
+			<result property="userName" column="user_name"/>
+			<result property="foreignLevel" column="foreign_level"/>
+			<result property="sex" column="sex"/>
+			<result property="nation" column="nation"/>
+			<result property="politicalLandscape" column="political_landscape"/>
+			<result property="marriage" column="marriage"/>
+			<result property="graduateSchool" column="graduate_school"/>
+			<result property="birth" column="birth"/>
+			<result property="IDCard" column="ID_card"/>
+			<result property="education" column="education"/>
+			<result property="address" column="address"/>
+			<result property="mobile" column="mobile"/>
+			<result property="email" column="email"/>
+			<result property="deptId" column="dept_id"/>
+			<result property="deptName" column="dept_name"/>
+			<result property="positionId" column="position_id"/>
+			<result property="positionName" column="position_name"/>
+		</association>
+		<association property="resume" javaType="Resume">
+			<id property="resumeId" column="resume_id"/>
+			<result property="resumeName" column="resume_name"/>
+			<result property="userId" column="user_id"/>
+			<result property="jobIntension" column="job_intension"/>
+			<result property="resumeEducation" column="resume_education"/>
+			<result property="workExperience" column="work_experience"/>
+			<result property="skillsCertificate" column="skills_certificate"/>
+			<result property="selfAssessment" column="self_assessment"/>
+			<result property="deliveryStatus" column="delivery_status"/>
+			<result property="createTime" column="create_time"/>
+			<result property="deliveryTime" column="delivery_time"/>
+		</association>
+	</resultMap>
+	
+	<!-- 确认参加面试 -->
+	<update id="updateConfirmInterview" parameterType="int">
+		update t_interview set confirm_interview=1, confirm_time=now() where interview_id=#{interviewId}
+	</update>
+	
+	<!-- 面试打分 -->
+	<update id="updateInterviewScore" parameterType="Interview">
+		update t_interview set write_score=#{writeScore}, interview_score=#{interviewScore}, 
+		total_score=write_score+interview_score where interview_id=#{interviewId}
+	</update>
+	
+	<!-- 查看面试评分 -->
+	<select id="queryInterviewScore" parameterType="Interview" resultType="Interview">
+		select * from t_interview where resume_id=#{resumeId} and user_id=#{userId}
+	</select>
+	
+	<!-- 面试成绩通过修改状态 -->
+	<update id="updateInterviewPass" parameterType="int">
+		update t_interview set interview_pass=1 where interview_id=#{interviewId} and total_score>70
+	</update>
+	
+	<!-- 录用 -->
+	<update id="updateEmployed" parameterType="Interview">
+		update t_interview set employed=1 where resume_id=#{resumeId} and user_id=#{userId}
+	</update>
+	
+	<!-- 入职 -->
+	<update id="updateEntry" parameterType="int">
+		update t_interview set entry=1 where interview_id=#{interviewId}
+	</update>
+</mapper>

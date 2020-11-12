@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.TrainDao"> 
+	
+	<!-- 添加培训信息 -->
+	<insert id="addTrainInfo" parameterType="Train">
+		insert into t_train(train_name, train_content, create_time) 
+		values(#{trainName}, #{trainContent}, now())
+	</insert>
+	
+	<!-- 查看所有培训信息 -->
+	<select id="queryAllTrainInfo" resultMap="allTrainInfo">
+		select * from t_train
+	</select>
+	
+	<select id="queryReleaseTrainInfo" resultMap="allTrainInfo">
+		select * from t_train where status=1
+	</select>
+	<resultMap type="Train" id="allTrainInfo">
+		<id property="trainId" column="train_id"/>
+		<result property="trainName" column="train_name"/>
+		<result property="trainContent" column="train_content"/>
+		<result property="trainTime" column="train_time"/>
+		<result property="status" column="status"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="releaseTime" column="release_time"/>
+	</resultMap>
+	
+	<!-- 通过ID查看单条培训信息 -->
+	<select id="queryTrainInfo" parameterType="int" resultType="Train">
+		select * from t_train where train_id=#{trainId}
+	</select>
+	
+	<!-- 删除单条培训信息 -->
+	<delete id="deleteTrainInfo" parameterType="int">
+		delete from t_train where train_id=#{trainId}
+	</delete>
+	
+	<!-- 更新培训信息 -->
+	<update id="updateTrainInfo" parameterType="Train">
+		update t_train set train_name=#{trainName}, train_content=#{trainContent}, update_time=now() 
+		where train_id=#{trainId} and status=0
+	</update>
+	
+	<update id="updateTrainRelease" parameterType="int">
+		update t_train set status=1, release_time=now() where train_id=#{trainId}
+	</update>
+</mapper>

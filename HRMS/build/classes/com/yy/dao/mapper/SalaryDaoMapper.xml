@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.SalaryDao">
+	
+	<!-- 添加工资(管理员) -->
+	<insert id="addSalary" parameterType="Salary">
+		insert into t_salary(user_id,base_salary,traffic_allowance,communication_allowance,
+		performance_bonus) values(#{userId},#{baseSalary},#{trafficAllowance},#{communicationAllowance},
+		#{performanceBonus})
+	</insert>
+	
+	<!-- 查找工资(管理员) -->
+	<select id="queryAllSalary" resultMap="allSalary">
+		select salary_id,t_salary.user_id from t_salary,t_user where t_salary.user_id=t_user.user_id
+	</select>
+	<resultMap type="Salary" id="allSalary">
+		<id property="salaryId" column="salary_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="deptId" column="dept_id"/>
+		<result property="positionId" column="position_id"/>
+		<result property="totalSalary" column="total_salary"/>
+		<result property="baseSalary" column="base_salary"/>
+		<result property="trafficAllowance" column="traffic_allowance"/>
+		<result property="communicationAllowance" column="communication_allowance"/>
+		<result property="performanceBonus" column="performance_bonus"/>
+		<result property="fineId" column="fine_id"/>
+		<result property="endowmentInsurance" column="endowment_insurance"/>
+		<result property="medicalInsurance" column="medical_insurance"/>
+		<result property="unemploymentInsurance" column="unemployment_insurance"/>
+		<result property="injuryInsurance" column="injury_insurance"/>
+		<result property="birthInsurance" column="birth_insurance"/>
+		<result property="housingFund" column="housing_fund"/>
+		<association property="user" column="User">
+			<id property="userId" column="user_id"/>
+			<result property="userName" column="user_name"/>		
+		</association>
+	</resultMap>
+		
+	<!-- 查找工资(个人) -->
+	<select id="queryPersonalSalary" parameterType="int" resultMap="allSalary">
+		select salary_id,t_salary.user_id from t_salary,t_user where t_salary.user_id=t_user.user_id and t_user.user_id=#{userId}
+	</select>
+	
+	<!-- 修改工资 -->
+	<update id="updateSalary" parameterType="Salary">
+		update t_salary set endowment_insurance=#{endowmentInsurance},medical_insurance=#{medicalInsurance},
+		unemployment_insurance=#{unemploymentInsurance},injury_insurance=#{injuryInsurance},
+		birth_insurance=#{birthInsurance},housing_fund=#{housingFund} where user_id=#{userId}
+	</update>
+</mapper>

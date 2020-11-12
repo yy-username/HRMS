@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.DeptDao">
+
+	<!-- 添加部门 -->
+	<insert id="addDept" parameterType="Dept">
+		insert into t_dept(dept_name, dept_introduction, create_time) values(#{deptName}, #{deptIntroduction}, now())
+	</insert>
+	
+	<!-- 通过ID查找部门 -->
+	<select id="queryDeptByDeptId" parameterType="int" resultType="Dept">
+		select dept_id, dept_name, dept_introduction from t_dept where dept_id=#{deptId}
+	</select>
+	
+	<!-- 通过部门名称查找部门 -->
+	<select id="queryDeptByDeptName" parameterType="String" resultType="Dept">
+		select dept_id, dept_name from t_dept where dept_name = #{deptName}
+	</select>
+	
+	<!-- 遍历所有部门 -->
+	<select id="queryAllDept" resultMap="allDept">
+		select dept_id, dept_name, dept_introduction, create_time, update_time from t_dept
+	</select>
+	<resultMap type="Dept" id="allDept">
+		<id property="deptId" column="dept_id"/>
+		<result property="deptName" column="dept_name"/>
+		<result property="deptIntroduction" column="dept_introduction"/>
+	</resultMap>
+
+	<!-- 删除部门 -->
+	<delete id="deleteDeptByDeptId" parameterType="int">
+		delete from t_dept where dept_id=#{deptId}
+	</delete>
+	
+	
+	<update id="updateDept" parameterType="Dept" >
+		update t_dept set dept_name=#{deptName}, dept_introduction=#{deptIntroduction}, update_time=now() where dept_id=#{deptId}
+	</update>
+	
+	<delete id="deleteAllDept">
+		delete from t_dept
+	</delete>
+	
+	<!-- 通过部门ID更改部门信息 -->
+	<!-- <update id="updateDeptById" parameterType="int">
+		update t_dept set dept_name=#{deptName}, dept_introduction=#{deptIntroduction}
+	</update> -->
+</mapper>

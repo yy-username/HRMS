@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.AttendanceDao">
+
+	<!-- 添加考勤记录（上班打卡） -->
+	<insert id="addAttendanceInfo" parameterType="int">
+		insert into t_attendance(user_id, create_time) 
+		values(#{userId}, now())
+	</insert>
+	
+	<!-- 修改考勤记录（上班打卡） -->
+	<insert id="updateInAttendance" parameterType="Attendance">
+		update t_attendance set in_clock_time=#{inClockTime}, puch_in=1, late=#{late} 
+		where attendance_id=#{attendanceId}
+	</insert>
+	
+	<!-- 修改考勤记录（下班打卡） -->
+	<update id="updateOutAttendance" parameterType="Attendance">
+		update t_attendance set out_clock_time=#{outClockTime}, punch_out=1, leaveEarly=#{leaveEarly} 
+		where attendance_id=#{attendanceId}
+	</update>
+	
+	
+	<select id="queryAttendance" parameterType="int" resultMap="allAttendancePersonal">
+		select * from t_attendance where user_id=#{userId} order by attendance_id desc
+	</select>
+	<resultMap type="Attendance" id="allAttendancePersonal">
+		<id property="attendanceId" column="attendance_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="inClockTime" column="in_clock_time"/>
+		<result property="puchIn" column="puch_in"/>
+		<result property="outClockTime" column="out_clock_time"/>
+		<result property="officeHours" column="office_hours"/>
+		<result property="overOfficeHours" column="over_office_hours"/>
+		<result property="punchOut" column="punch_out"/>
+		<result property="late" column="late"/>
+		<result property="leaveEarly" column="leaveEarly"/>
+		<result property="createTime" column="create_time"/>
+		<association property="user" javaType="User">
+			<id property="userId" column="user_id"/>
+			<result property="userName" column="user_name"/>
+		</association>
+	</resultMap>
+	
+	<!-- 通过考勤ID查找 -->
+	<select id="queryByAttendanceId" parameterType="int" resultType="Attendance">
+		select * from t_attendance where attendance_id=#{attendanceId}
+	</select>
+	
+	<!-- 通过userID查询个人迟到记录 -->
+	<select id="queryAttendanceLate" parameterType="int" resultType="int">
+		select sum(late) from t_attendance where user_id=#{userId}
+	</select>
+	
+	<select id="queryAttendanceEarly" parameterType="int" resultType="int">
+		select sum(leaveEarly) from t_attendance where user_id=#{userId}
+	</select>
+	
+	<select id="queryByUserIdAndDate" resultMap="allAttendancePersonal">
+		select * from t_attendance where user_id=#{param1} and create_time between #{param2} and #{param3}
+	</select>
+	
+	<!-- 查找所有人的考勤记录 -->
+	<select id="queryAllAttendance" resultMap="allAttendancePersonal">
+		select user_name, attendance_id, in_clock_time, puch_in, out_clock_time, 
+		office_hours, over_office_hours, punch_out, late, leaveEarly, t_user.user_id, t_attendance.user_id
+		from t_attendance, t_user where t_attendance.user_id = t_user.user_id
+	</select>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.PositionDao">
+
+	<!-- 添加职位 -->
+	<insert id="addPosition" parameterType="String">
+		insert into t_position(position_name, create_time) values(#{positionName}, now())
+	</insert>
+	
+	<!-- 通过职位名称查找职位 -->
+	<select id="queryPositionByPositionName" parameterType="string" resultType="Position">
+		select position_id,position_name from t_position where position_name=#{positionName}
+	</select>
+	
+	<!-- 遍历所有职位 -->
+	<select id="queryAllPosition" resultMap="allPosition">
+		select position_id,position_name,dept_id,create_time,update_time from t_position
+	</select>
+	<resultMap type="Position" id="allPosition">
+		<id property="positionId" column="position_id"/>
+		<result property="positionName" column="position_name"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+	
+	<!-- 通过职位ID删除职位 -->
+	<delete id="deletePositionByPositionId" parameterType="int">
+		delete from t_position where position_id=#{positionId}
+	</delete>
+	
+	<!-- 通过部门ID删除职位 -->
+	<delete id="deletePositionByDeptId" parameterType="int">
+		delete from t_position where dept_id=#{deptId}
+	</delete>
+	
+	<!-- 删除所有职位 -->
+	<delete id="deleteAllPosition">
+		delete from t_position
+	</delete>
+	
+	<!-- 查找每个部门的职位详情(待补充) -->
+	<select id="queryPositionByDeptId" parameterType="int" resultType="Position">
+		select position_id, position_name, t_position.dept_id, dept_Name from t_position, t_dept 
+		where t_position.dept_id=t_dept.dept_id and t_position.dept_id=#{deptId}
+	</select>
+	<!-- <resultMap type="" id="deptAndPosition">
+		<id property="" column=""/>
+		<result property="" column=""/>
+	</resultMap> -->
+	
+	<!-- 通过职位ID查找职位 -->
+	<select id="queryPositionById" parameterType="int" resultType="Position">
+		select * from t_position where position_id=#{positionId}
+	</select>
+	
+	<!-- 修改职位 -->
+	<update id="updatePosition" parameterType="Position">
+		update t_position set position_name=#{positionName} where position_id=#{positionId}
+	</update>
+</mapper>

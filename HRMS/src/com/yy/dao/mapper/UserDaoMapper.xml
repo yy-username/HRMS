@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.UserDao">
+	<insert id="addUser" parameterType="User">
+		insert into t_user(nick_name, password, user_status, create_time, update_time) 
+		values(#{nickName}, #{password}, 1, now(), now())
+	</insert>
+	
+	<!-- 遍历All员工 -->
+	<select id="queryAllEmployee" resultType="User">
+		select * from t_user where user_status=2
+	</select>
+	
+	<!-- 添加员工 -->
+	<insert id="addEmployee" parameterType="User">
+		insert into t_user(nick_name, user_name, password, user_status, dept_id, position_id, create_time) 
+		values(#{nickName}, #{userName}, 123456, 2, #{deptId}, #{positionId}, now())
+	</insert>
+	
+	<select id="queryUserByMobileAndPwd" parameterType="User" resultType="User">
+		select * from t_user where password=#{password} and mobile=#{mobile}
+	</select>
+	
+	<select id="queryUserByUserName" parameterType="String" resultType="User">
+		select user_id, nick_name from t_user where nick_name=#{nickName}
+	</select>
+	
+	<!-- 游客登陆 -->
+	<select id="queryUserByNameAndPwd" parameterType="User" resultType="User">
+		select * from t_user 
+		where nick_name=#{nickName} and password=#{password}
+	</select>
+
+	<select id="queryEmployee" resultMap="all">
+		select * from t_user where user_status=2
+	</select>
+	<resultMap type="User" id="all">
+		<id property="userId" column="user_id"/>
+		<result property="nickName" column="nick_name"/>
+		<result property="userName" column="user_name"/>
+		<result property="foreignLevel" column="foreign_level"/>
+		<result property="sex" column="sex"/>
+		<result property="nation" column="nation"/>
+		<result property="politicalLandscape" column="political_landscape"/>
+		<result property="marriage" column="marriage"/>
+		<result property="graduateSchool" column="graduate_school"/>
+		<result property="birth" column="birth"/>
+		<result property="IDCard" column="ID_card"/>
+		<result property="education" column="education"/>
+		<result property="address" column="address"/>
+		<result property="mobile" column="mobile"/>
+		<result property="email" column="email"/>
+		<result property="deptId" column="dept_id"/>
+		<result property="deptName" column="dept_name"/>
+		<result property="positionId" column="position_id"/>
+		<result property="positionName" column="position_name"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<collection property="dept" javaType="Dept" column="dept_name" select="com.yy.dao.DeptDao.queryDeptByDeptName"/>
+		<collection property="position" javaType="Position" column="position_name" select="com.yy.dao.PositionDao.queryPositionByPositionName"/>
+	 </resultMap>
+	
+	<!-- 用户更新 -->
+	<update id="updateUserByUser" parameterType="User">
+		update t_user set user_name=#{userName}, education=#{education}, foreign_level=#{foreignLevel},
+		 sex=#{sex}, birth=#{birth}, graduate_school=#{graduateSchool}, political_landscape=#{politicalLandscape},
+		 marriage=#{marriage}, mobile=#{mobile}, email=#{email}, nation=#{nation} 
+		where user_id=#{userId}
+	</update>
+
+	<!-- 根据部门ID查找用户 -->
+	<select id="queryUserByDeptId" parameterType="int" resultMap="userDept">
+		select * from t_user where dept_id=#{deptId}
+	</select>
+	<resultMap type="User" id="userDept">
+		<id property="userId" column="user_id"/>
+		<result property="userName" column="user_name"/>
+		<result property="foreignLevel" column="foreign_level"/>
+		<result property="sex" column="sex"/>
+		<result property="nation" column="nation"/>
+		<result property="politicalLandscape" column="political_landscape"/>
+		<result property="marriage" column="marriage"/>
+		<result property="graduateSchool" column="graduate_school"/>
+		<result property="birth" column="birth"/>
+		<result property="IDCard" column="ID_card"/>
+		<result property="education" column="education"/>
+		<result property="address" column="address"/>
+		<result property="mobile" column="mobile"/>
+		<result property="email" column="email"/>
+		<result property="deptId" column="dept_id"/>
+		<result property="positionId" column="position_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+	
+	<!-- 根据职位ID查找员工 -->
+	<select id="queryUserByPositionId" parameterType="int" resultMap="userPosition">
+		select * from t_user where position_id=#{positionId}
+	</select>
+	<resultMap type="User" id="userPosition">
+		<id property="userId" column="user_id"/>
+		<result property="userName" column="user_name"/>
+		<result property="foreignLevel" column="foreign_level"/>
+		<result property="sex" column="sex"/>
+		<result property="nation" column="nation"/>
+		<result property="politicalLandscape" column="political_landscape"/>
+		<result property="marriage" column="marriage"/>
+		<result property="graduateSchool" column="graduate_school"/>
+		<result property="birth" column="birth"/>
+		<result property="IDCard" column="ID_card"/>
+		<result property="education" column="education"/>
+		<result property="address" column="address"/>
+		<result property="mobile" column="mobile"/>
+		<result property="email" column="email"/>
+		<result property="deptId" column="dept_id"/>
+		<result property="positionId" column="position_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+	
+	<!-- 通过员工ID删除员工 -->
+	<delete id="deleteUserById" parameterType="int">
+		delete from t_user where user_id=#{userId}
+	</delete>
+	
+	<select id="queryUserByUserId" parameterType="int" resultMap="selectUser">
+		select user_id, nick_name, user_name, t_user.dept_id, t_dept.dept_id, 
+		dept_name, t_user.position_id, t_position.position_id, position_name 
+		from t_user, t_dept, t_position where t_user.dept_id=t_dept.dept_id 
+		and t_user.position_id=t_position.position_id and user_id=#{userId}
+	</select>
+	<resultMap type="User" id="selectUser">
+		<id property="userId" column="user_id"/>
+		<result property="nickName" column="nick_name"/>
+		<result property="userName" column="user_name"/>
+		<result property="foreignLevel" column="foreign_level"/>
+		<result property="sex" column="sex"/>
+		<result property="nation" column="nation"/>
+		<result property="politicalLandscape" column="political_landscape"/>
+		<result property="marriage" column="marriage"/>
+		<result property="graduateSchool" column="graduate_school"/>
+		<result property="birth" column="birth"/>
+		<result property="IDCard" column="ID_card"/>
+		<result property="education" column="education"/>
+		<result property="address" column="address"/>
+		<result property="mobile" column="mobile"/>
+		<result property="email" column="email"/>
+		<result property="deptId" column="dept_id"/>
+		<result property="positionId" column="position_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+		<association property="dept" javaType="Dept">
+			<id property="deptId" column="dept_id"/>
+			<result property="deptName" column="dept_name"/>
+			<result property="deptIntroduction" column="dept_introduction"/>
+		</association>
+		<association property="position" javaType="Position">
+			<id property="positionId" column="position_id"/>
+			<result property="positionName" column="position_name"/>
+			<result property="createTime" column="create_time"/>
+			<result property="updateTime" column="update_time"/>
+		</association>
+	</resultMap>
+	
+	<update id="updateEmployee" parameterType="User"> 
+		update t_user set dept_id=#{deptId}, position_id=#{positionId} where user_id=#{userId}
+	</update>
+</mapper>

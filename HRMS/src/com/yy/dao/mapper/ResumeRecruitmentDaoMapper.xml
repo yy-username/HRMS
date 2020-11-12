@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.ResumeRecruitmentDao">
+	<!-- 投递简历 -->
+	<insert id="addResumeRecruitment" parameterType="ResumeRecruitment">
+		insert into t_resume_recruitment(resume_id, recruitment_id, sate) 
+		values(#{resumeId}, #{recruitmentId}, 1)
+	</insert>
+	
+	<!-- 查询某条招聘信息有几份简历投递 -->
+	<select id="queryResume" parameterType="int" resultMap="allResume">
+		select resume_recruitmen_id, resume_id, recruitment_id from t_resume_recruitment where recruitment_id=#{recruitmentId}
+	</select>
+	<resultMap type="ResumeRecruitment" id="allResume">
+		<id property="resumeRecruitmenId" column="resume_recruitmen_id"/>
+		<result property="resumeId" column="resume_id"/>
+		<result property="recruitmentId" column="recruitment_id"/>
+	</resultMap>
+	
+	<!-- 查询某条简历所投递的招聘信息 -->
+	<select id="queryRecruitment" parameterType="int" resultType="ResumeRecruitment">
+		select resume_recruitmen_id, resume_id, recruitment_id from t_resume_recruitment where resume_id=#{resumeId}
+	</select>
+	
+	<!-- 查看投递状态(用户在简历页面用) -->
+	<select id="queryState" parameterType="int" resultType="ResumeRecruitment">
+		select resume_recruitmen_id, resume_id, recruitment_id from t_resume_recruitment where resume_id=#{resumeId} and state=1
+	</select>
+</mapper>

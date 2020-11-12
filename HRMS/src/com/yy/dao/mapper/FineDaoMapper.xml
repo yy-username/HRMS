@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yy.dao.FineDao">
+	
+	<!-- 添加奖惩记录 -->
+	<insert id="addFine" parameterType="int">
+		insert into t_fine(user_id, create_time) values(#{userId}, now())
+	</insert>
+	
+	<!-- 迟到 -->
+	<update id="updateByLate" parameterType="int">
+		update t_fine set late_leave_early=1,late_early_money=30 where attendance_id=#{attendanceId}
+	</update>
+	
+	<!-- 早退 -->
+	<update id="updateByEarly" parameterType="int">
+		update t_fine set late_leave_early=late_leave_early+1,late_early_money=late_early_money+30 where attendance_id=#{attendanceId}
+	</update>
+	
+	<select id="queryFine" parameterType="int" resultMap="personalFine">
+		select t_fine.user_id,t_fine.attendance_id,fine_id,total_fine,late_leave_early,
+		late_early_money,t_fine.create_time,user_name,in_clock_time,puch_in,out_clock_time,
+		office_hours,over_office_hours,punch_out,late,leaveEarly from t_fine,t_user,t_attendance 
+		where t_fine.user_id=t_user.user_id and t_fine.attendance_id=t_attendance.attendance_id and t_user.user_id=#{userId} order by fine_id
+	</select>
+	<resultMap type="Fine" id="personalFine">
+		<id property="fineId" column="fine_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="attendanceId" column="attendance_id"/>
+		<result property="totalFine" column="total_fine"/>
+		<result property="lateLeaveEarly" column="late_leave_early"/>
+		<result property="lateEarlyMoney" column="late_early_money"/>
+		<result property="createTime" column="create_time"/>
+		<association property="user" javaType="User">
+			<id property="userId" column="user_id"/>
+			<result property="nickName" column="nick_name"/>
+			<result property="userName" column="user_name"/>
+			<result property="foreignLevel" column="foreign_level"/>
+			<result property="sex" column="sex"/>
+			<result property="nation" column="nation"/>
+			<result property="politicalLandscape" column="political_landscape"/>
+			<result property="marriage" column="marriage"/>
+			<result property="graduateSchool" column="graduate_school"/>
+			<result property="birth" column="birth"/>
+			<result property="IDCard" column="ID_card"/>
+			<result property="education" column="education"/>
+			<result property="address" column="address"/>
+			<result property="mobile" column="mobile"/>
+			<result property="email" column="email"/>
+			<result property="deptId" column="dept_id"/>
+			<result property="deptName" column="dept_name"/>
+			<result property="positionId" column="position_id"/>
+			<result property="positionName" column="position_name"/>
+			<result property="createTime" column="create_time"/>
+			<result property="updateTime" column="update_time"/>
+		</association>
+		<association property="attendance" javaType="Attendance">
+			<id property="attendanceId" column="attendance_id"/>
+			<result property="userId" column="user_id"/>
+			<result property="inClockTime" column="in_clock_time"/>
+			<result property="puchIn" column="puch_in"/>
+			<result property="outClockTime" column="out_clock_time"/>
+			<result property="officeHours" column="office_hours"/>
+			<result property="overOfficeHours" column="over_office_hours"/>
+			<result property="punchOut" column="punch_out"/>
+			<result property="late" column="late"/>
+			<result property="leaveEarly" column="leaveEarly"/>
+			<result property="createTime" column="create_time"/>
+		</association>
+	</resultMap>
+	
+	<select id="queryAllFine" resultType="Fine">
+		select * from t_fine where user_id=#{userId} 
+	</select>
+</mapper>
